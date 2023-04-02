@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">jimatgo_app</string>    
+    <string name="facebook_app_id">1219291448694433</string>
+    <string name="fb_login_protocol_scheme">fb1219291448694433</string>
+    <string name="facebook_client_token">496840f77dcfa5734567089c3cde8d6c</string>
+</resources>

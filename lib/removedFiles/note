@@ -1,0 +1,515 @@
+return SingleChildScrollView(
+      child: SizedBox(
+        height: screenHeight,
+        child: Column(
+          children: [
+            Flexible(
+              child: Stack(
+                children: [
+                  Container(
+                    decoration: const BoxDecoration(
+                      color: Color.fromARGB(255, 231, 176, 37),
+                      borderRadius: BorderRadius.only(
+                          bottomLeft: Radius.circular(20),
+                          bottomRight: Radius.circular(20)),
+                    ),
+                  ),
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(right: 15),
+                        child: Align(
+                            alignment: Alignment.topRight,
+                            child: Image.asset("assets/images/bell_icon.png",
+                                scale: 3.0)),
+                      ),
+                      const Padding(
+                        padding: EdgeInsets.only(left: 15),
+                        child: Align(
+                          alignment: Alignment.centerLeft,
+                          child: Text(
+                            "Hi Gokul",
+                            style: TextStyle(
+                              fontSize: 25,
+                              fontWeight: FontWeight.w500,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ),
+                      ),
+                      Row(
+                        children: [
+                          const Padding(
+                            padding: EdgeInsets.only(left: 15),
+                            child: Align(
+                              alignment: Alignment.centerLeft,
+                              child: Text(
+                                "Welcome Back",
+                                style: TextStyle(
+                                  fontSize: 30,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.white,
+                                ),
+                              ),
+                            ),
+                          ),
+                          Image.asset("assets/images/hand_icon.png",
+                              scale: 13.0),
+                        ],
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(
+              height: 15,
+            ),
+            Flexible(
+              child: SingleChildScrollView(
+                physics: const BouncingScrollPhysics(
+                    decelerationRate: ScrollDecelerationRate.fast),
+                scrollDirection: Axis.horizontal,
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
+                  child: Row(
+                    children: [
+                      GestureDetector(
+                        onTap: () {},
+                        child: Container(
+                            height: 60,
+                            width: screenWidth / 2.7,
+                            padding: const EdgeInsets.fromLTRB(5, 5, 5, 5),
+                            decoration: BoxDecoration(
+                                border:
+                                    Border.all(color: iconColor, width: 1.5),
+                                borderRadius: const BorderRadius.all(
+                                    Radius.circular(10))),
+                            child: Row(
+                              children: [
+                                Image.asset(
+                                  "assets/images/gift_icon.png",
+                                  width: 50,
+                                  height: 50,
+                                ),
+                                const Text(
+                                  "My Rewards",
+                                  textAlign: TextAlign.center,
+                                  maxLines: 2,
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                              ],
+                            )),
+                      ),
+                      const SizedBox(
+                        width: 10,
+                      ),
+                      GestureDetector(
+                        onTap: () {},
+                        child: Container(
+                            height: 60,
+                            width: screenWidth / 2.7,
+                            padding: const EdgeInsets.fromLTRB(5, 5, 5, 5),
+                            decoration: BoxDecoration(
+                                border:
+                                    Border.all(color: iconColor, width: 1.5),
+                                borderRadius: const BorderRadius.all(
+                                    Radius.circular(10))),
+                            child: Row(
+                              children: [
+                                Image.asset(
+                                  "assets/images/promotion_icon.png",
+                                  width: 60,
+                                  height: 60,
+                                ),
+                                const Text(
+                                  "Promotion",
+                                  textAlign: TextAlign.center,
+                                  maxLines: 2,
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                              ],
+                            )),
+                      ),
+                      const SizedBox(
+                        width: 10,
+                      ),
+                      GestureDetector(
+                        onTap: () {},
+                        child: Container(
+                          height: 60,
+                          width: screenWidth / 2.7,
+                          decoration: BoxDecoration(
+                              border: Border.all(color: iconColor, width: 1.5),
+                              borderRadius:
+                                  const BorderRadius.all(Radius.circular(10))),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+            Flexible(
+              child: Column(
+                children: [
+                  /* Padding(
+                    padding: const EdgeInsets.fromLTRB(20, 0, 0, 0),
+                    child: Align(
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        "Packages",
+                        style: TextStyle(
+                            fontSize: contentFontSize,
+                            fontWeight: FontWeight.w500),
+                      ),
+                    ),
+                  ), */
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(3, 15, 3, 0),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children: [
+                            Column(
+                              children: [
+                                Container(
+                                  padding: const EdgeInsets.all(3),
+                                  decoration: const BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      color: Colors.grey),
+                                  child: const Icon(Icons.car_crash, size: 40),
+                                ),
+                                const SizedBox(height: 5),
+                                const Text("Car Service",
+                                    style: TextStyle(fontSize: 12)),
+                              ],
+                            ),
+                            Column(
+                              children: [
+                                Container(
+                                  padding: const EdgeInsets.all(3),
+                                  decoration: const BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      color: Colors.grey),
+                                  child: const Icon(Icons.car_repair, size: 40),
+                                ),
+                                const SizedBox(height: 5),
+                                const Text("Tyre Alignment",
+                                    maxLines: 2,
+                                    style: TextStyle(fontSize: 12)),
+                              ],
+                            ),
+                            Column(
+                              children: [
+                                Container(
+                                  padding: const EdgeInsets.all(3),
+                                  decoration: const BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      color: Colors.grey),
+                                  child: const Icon(Icons.ac_unit, size: 40),
+                                ),
+                                const SizedBox(height: 5),
+                                const Text(
+                                  "Aircond Flushing",
+                                  style: TextStyle(fontSize: 12),
+                                ),
+                              ],
+                            ),
+                            Column(
+                              children: [
+                                Container(
+                                  padding: const EdgeInsets.all(3),
+                                  decoration: const BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      color: Colors.grey),
+                                  child: const Icon(Icons.battery_charging_full,
+                                      size: 40),
+                                ),
+                                const SizedBox(height: 5),
+                                const Text("Car Battery",
+                                    style: TextStyle(fontSize: 12)),
+                              ],
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 15),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children: [
+                            Column(
+                              children: [
+                                Container(
+                                  padding: const EdgeInsets.all(3),
+                                  decoration: const BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      color: Colors.grey),
+                                  child: const Icon(Icons.car_crash, size: 40),
+                                ),
+                                const SizedBox(height: 5),
+                                const Text("Car Service",
+                                    style: TextStyle(fontSize: 12)),
+                              ],
+                            ),
+                            Column(
+                              children: [
+                                Container(
+                                  padding: const EdgeInsets.all(3),
+                                  decoration: const BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      color: Colors.grey),
+                                  child: const Icon(Icons.car_repair, size: 40),
+                                ),
+                                const SizedBox(height: 5),
+                                const Text("Tyre Alignment",
+                                    style: TextStyle(fontSize: 12)),
+                              ],
+                            ),
+                            Column(
+                              children: [
+                                Container(
+                                  padding: const EdgeInsets.all(3),
+                                  decoration: const BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      color: Colors.grey),
+                                  child: const Icon(Icons.ac_unit, size: 40),
+                                ),
+                                const SizedBox(height: 5),
+                                const Text(
+                                  "Aircond Flushing",
+                                  style: TextStyle(fontSize: 12),
+                                ),
+                              ],
+                            ),
+                            Column(
+                              children: [
+                                Container(
+                                  padding: const EdgeInsets.all(3),
+                                  decoration: const BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      color: Colors.grey),
+                                  child: const Icon(Icons.battery_charging_full,
+                                      size: 40),
+                                ),
+                                const SizedBox(height: 5),
+                                const Text("Car Battery",
+                                    style: TextStyle(fontSize: 12)),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 15),
+            Flexible(
+              flex: 2,
+              fit: FlexFit.loose,
+              child: Column(
+                children: [
+                  Flexible(
+                    fit: FlexFit.loose,
+                    child: Container(
+                      padding: const EdgeInsets.fromLTRB(0, 10, 0, 10),
+                      color: const Color.fromARGB(255, 231, 176, 37),
+                      child: Column(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.fromLTRB(25, 0, 0, 5),
+                            child: Align(
+                              alignment: Alignment.centerLeft,
+                              child: Text(
+                                "Highlights",
+                                style: TextStyle(
+                                  fontSize: contentFontSize,
+                                  fontWeight: FontWeight.w500,
+                                  color: Colors.black,
+                                ),
+                              ),
+                            ),
+                          ),
+                          CarouselSlider(
+                            items: [
+                              for (int i = 0; i < _images.length; i++)
+                                CachedNetworkImage(
+                                  imageUrl: _images[i],
+                                  fadeInDuration: const Duration(seconds: 2),
+                                  imageBuilder: (context, imageProvider) =>
+                                      Container(
+                                    decoration: BoxDecoration(
+                                      color: Colors.red,
+                                      borderRadius: const BorderRadius.all(
+                                          Radius.circular(30)),
+                                      image: DecorationImage(
+                                        image: imageProvider,
+                                        fit: BoxFit.fill,
+                                      ),
+                                    ),
+                                  ),
+                                  placeholder: (context, url) =>
+                                      Shimmer.fromColors(
+                                    baseColor: const Color.fromARGB(
+                                        255, 239, 237, 237),
+                                    highlightColor: const Color.fromARGB(
+                                        255, 199, 198, 198),
+                                    child: Container(
+                                      color: const Color.fromARGB(
+                                          255, 215, 214, 214),
+                                    ),
+                                  ),
+                                  errorWidget: (context, url, error) =>
+                                      Shimmer.fromColors(
+                                    baseColor: const Color.fromARGB(
+                                        255, 239, 237, 237),
+                                    highlightColor: const Color.fromARGB(
+                                        255, 199, 198, 198),
+                                    child: Container(
+                                      color: const Color.fromARGB(
+                                          255, 215, 214, 214),
+                                    ),
+                                  ),
+                                ),
+                            ],
+                            options: CarouselOptions(
+                              aspectRatio: 2.0,
+                              initialPage: 0,
+                              enableInfiniteScroll: true,
+                              reverse: false,
+                              autoPlay: true,
+                              autoPlayInterval: const Duration(seconds: 6),
+                              autoPlayAnimationDuration:
+                                  const Duration(seconds: 1),
+                              autoPlayCurve: Curves.easeInOut,
+                              enlargeCenterPage: true,
+                              onPageChanged: (index, reason) {
+                                setState(() {
+                                  _currentIndex = index;
+                                });
+                              },
+                            ),
+                          ),
+                          const SizedBox(height: 15),
+                          Flexible(
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                for (int i = 0; i < _images.length; i++)
+                                  Container(
+                                    height: 9,
+                                    width: screenWidth * 0.03,
+                                    margin: const EdgeInsets.all(1.5),
+                                    decoration: BoxDecoration(
+                                        borderRadius: const BorderRadius.all(
+                                            Radius.circular(10.0)),
+                                        color: _currentIndex == i
+                                            ? const Color.fromARGB(
+                                                255, 208, 153, 43)
+                                            : const Color.fromARGB(
+                                                255, 234, 208, 155)),
+                                  ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Flexible(
+                child: Container(
+              color: Colors.grey,
+            ))
+          ],
+        ),
+      ),
+    );
+
+
+
+
+
+
+
+    CarouselSlider(
+                  items: [
+                    for (int i = 0; i < _images.length; i++)
+                      CachedNetworkImage(
+                        imageUrl: _images[i],
+                        fadeInDuration: const Duration(seconds: 2),
+                        imageBuilder: (context, imageProvider) => Container(
+                          margin: const EdgeInsets.all(5),
+                          decoration: BoxDecoration(
+                            color: Colors.red,
+                            borderRadius:
+                                const BorderRadius.all(Radius.circular(30)),
+                            image: DecorationImage(
+                              image: imageProvider,
+                              fit: BoxFit.fill,
+                            ),
+                          ),
+                        ),
+                        placeholder: (context, url) => Shimmer.fromColors(
+                          baseColor: const Color.fromARGB(255, 239, 237, 237),
+                          highlightColor:
+                              const Color.fromARGB(255, 199, 198, 198),
+                          child: Container(
+                            color: const Color.fromARGB(255, 215, 214, 214),
+                          ),
+                        ),
+                        errorWidget: (context, url, error) =>
+                            Shimmer.fromColors(
+                          baseColor: const Color.fromARGB(255, 239, 237, 237),
+                          highlightColor:
+                              const Color.fromARGB(255, 199, 198, 198),
+                          child: Container(
+                            color: const Color.fromARGB(255, 215, 214, 214),
+                          ),
+                        ),
+                      ),
+                  ],
+                  options: CarouselOptions(
+                    aspectRatio: 2.0,
+                    initialPage: 0,
+                    enableInfiniteScroll: true,
+                    reverse: false,
+                    autoPlay: true,
+                    autoPlayInterval: const Duration(seconds: 6),
+                    autoPlayAnimationDuration: const Duration(seconds: 1),
+                    autoPlayCurve: Curves.easeInOut,
+                    enlargeCenterPage: true,
+                    onPageChanged: (index, reason) {
+                      setState(() {
+                        _currentIndex = index;
+                      });
+                    },
+                  ),
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    for (int i = 0; i < _images.length; i++)
+                      Container(
+                        height: 9,
+                        width: screenWidth * 0.03,
+                        margin: const EdgeInsets.all(1.5),
+                        decoration: BoxDecoration(
+                            borderRadius:
+                                const BorderRadius.all(Radius.circular(10.0)),
+                            color: _currentIndex == i
+                                ? const Color.fromARGB(255, 208, 153, 43)
+                                : const Color.fromARGB(255, 234, 208, 155)),
+                      ),
+                  ],
+                ),

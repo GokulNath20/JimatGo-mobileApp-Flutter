@@ -1,0 +1,1011 @@
+// ignore_for_file: depend_on_referenced_packages
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:jimatgo_app/auth.dart';
+import 'package:jimatgo_app/constants.dart';
+import 'package:jimatgo_app/homepage.dart';
+import 'package:jimatgo_app/loginpage.dart';
+import 'package:jimatgo_app/mainpage.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:email_validator/email_validator.dart';
+import 'package:username_validator/username_validator.dart';
+import 'package:flutter_pw_validator/flutter_pw_validator.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+
+class Register2 extends StatefulWidget {
+  const Register2({super.key});
+
+  @override
+  State<Register2> createState() => _Register2State();
+}
+
+class _Register2State extends State<Register2> with TickerProviderStateMixin {
+  late double height, width;
+
+  final FocusNode _focusNodeUserName = FocusNode();
+  final FocusNode _focusNodeEmail = FocusNode();
+  final FocusNode _focusNodePhoneNumber = FocusNode();
+  final FocusNode _focusNodePassword = FocusNode();
+  final FocusNode _focusNodeReEnterPassword = FocusNode();
+  final validatorKey = GlobalKey<FlutterPwValidatorState>();
+  final _formKey = GlobalKey<FormState>();
+
+  final _userNameController = TextEditingController();
+  final _emailController = TextEditingController();
+  final _phoneNumberController = TextEditingController();
+  final _passwordController = TextEditingController();
+  final _reEnterPasswordController = TextEditingController();
+
+  bool _isChecked = false; //accept terms and condition checkbox
+  bool _isVisible = false; //to view password
+  bool _isClick = false; //textfield color changing
+  bool passwordMatch = false; //check password match
+  String eula = "";
+  String? errorMessage = '';
+
+  late Animation<double> containerSize;
+  late AnimationController animationController;
+  Duration animationDuration = const Duration(milliseconds: 270);
+
+  Color textFormFieldColor1 = const Color.fromARGB(255, 206, 206, 200);
+  Color textFormFieldColor2 = const Color.fromARGB(255, 206, 206, 200);
+  Color textFormFieldColor3 = const Color.fromARGB(255, 206, 206, 200);
+  Color textFormFieldColor4 = const Color.fromARGB(255, 206, 206, 200);
+  Color textFormFieldColor5 = const Color.fromARGB(255, 206, 206, 200);
+  Color textFormFieldOnTapColor = const Color.fromARGB(255, 223, 221, 221);
+  Color validColor = Colors.green;
+  Color errorColor = Colors.red;
+
+  @override
+  void initState() {
+    super.initState();
+    animationController =
+        AnimationController(vsync: this, duration: animationDuration);
+    _userNameController;
+    _emailController;
+    _phoneNumberController;
+    _passwordController;
+    _reEnterPasswordController;
+  }
+
+  @override
+  void dispose() {
+    animationController.dispose();
+    super.dispose();
+  }
+
+  void updateStatus() {
+    setState(() {
+      _isVisible = !_isVisible;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    Color getColor(Set<MaterialState> states) {
+      const Set<MaterialState> interactiveStates = <MaterialState>{
+        MaterialState.pressed,
+        MaterialState.hovered,
+        MaterialState.focused,
+      };
+      if (states.any(interactiveStates.contains)) {
+        return const Color.fromARGB(255, 177, 129, 26);
+      }
+      return const Color.fromARGB(255, 177, 129, 26);
+    }
+
+    height = MediaQuery.of(context).size.height;
+    width = MediaQuery.of(context).size.width;
+    //double defaultRegisterSize = height - (height * 0.11);
+
+    containerSize = Tween<double>(
+      begin: height * 0.11,
+      //end: defaultRegisterSize,
+    ).animate(
+      CurvedAnimation(
+        parent: animationController,
+        curve: Curves.linear,
+      ),
+    );
+
+    return Scaffold(
+      //resizeToAvoidBottomInset: false,
+      body: GestureDetector(
+        onTap: () {
+          FocusManager.instance.primaryFocus?.unfocus();
+        },
+        child: SafeArea(
+          child: SizedBox(
+            height: height,
+            width: width,
+            child: Stack(
+              children: [
+                /*
+                Positioned(
+                  top: 100,
+                  right: -50,
+                  child: Container(
+                    width: 100,
+                    height: 100,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(50),
+                      color: const Color.fromARGB(255, 201, 153, 63),
+                    ),
+                  ),
+                ),
+                Positioned(
+                  top: -50,
+                  left: -50,
+                  child: Container(
+                    width: 200,
+                    height: 200,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(100),
+                      color: const Color.fromARGB(255, 201, 153, 63),
+                    ),
+                  ),
+                ),*/
+                Form(
+                  key: _formKey,
+                  child: Padding(
+                    padding: const EdgeInsets.fromLTRB(20, 0, 25, 0),
+                    child: SingleChildScrollView(
+                      child: Column(
+                        children: [
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const SizedBox(
+                                height: 40,
+                              ),
+                              const Text(
+                                "REGISTER",
+                                style: TextStyle(
+                                  fontSize: 33,
+                                  fontFamily: 'BebasNeue',
+                                  fontWeight: FontWeight.bold,
+                                  letterSpacing: 1,
+                                  color: titleColor,
+                                ),
+                              ),
+                              const SizedBox(
+                                height: 20,
+                              ),
+                              const Text(
+                                "Username",
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              const SizedBox(
+                                height: 15,
+                              ),
+                              Container(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 20,
+                                ),
+                                decoration: BoxDecoration(
+                                  color: textFormFieldColor1,
+                                  borderRadius: BorderRadius.circular(30),
+                                ),
+                                child: Focus(
+                                  onFocusChange: (hasFocus) {
+                                    setState(() {
+                                      if (hasFocus) {
+                                        textFormFieldColor1 =
+                                            textFormFieldOnTapColor;
+                                        _isClick = true;
+                                      } else {
+                                        textFormFieldColor1 =
+                                            const Color.fromARGB(
+                                                255, 206, 206, 200);
+                                        _isClick = false;
+                                      }
+                                      return;
+                                    });
+                                  },
+                                  child: TextFormField(
+                                    controller: _userNameController,
+                                    keyboardType: TextInputType.text,
+                                    autovalidateMode: AutovalidateMode.always,
+                                    validator: (value) =>
+                                        _usernameValidation(value),
+                                    focusNode: _focusNodeUserName,
+                                    onFieldSubmitted: (v) {
+                                      FocusScope.of(context)
+                                          .requestFocus(_focusNodeEmail);
+                                    },
+                                    onChanged: (value) {
+                                      setState(() {
+                                        _userNameController;
+                                      });
+                                    },
+                                    decoration: InputDecoration(
+                                      errorStyle: TextStyle(
+                                          letterSpacing: 0.3,
+                                          color:
+                                              _usernameErrorTextColorValidation(),
+                                          fontWeight: FontWeight.w500),
+                                      labelStyle: TextStyle(
+                                          color: _focusNodeUserName.hasFocus
+                                              ? Colors.blue
+                                              : null),
+                                      errorMaxLines: 2,
+                                      border: InputBorder.none,
+                                      icon: const Icon(
+                                        Icons.person,
+                                        color: iconColor,
+                                      ),
+                                      hintText: "ex:Jackie",
+                                      labelText: 'Enter username',
+                                      /*border: OutlineInputBorder(
+                                            borderRadius: BorderRadius.all(
+                                              Radius.circular(5.0),
+                                            ),
+                                            borderSide: BorderSide(
+                                              color: Colors.black,
+                                              width: 1.0,
+                                            ),
+                                          ),*/
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              if (_isClick) _usernameValidationText(),
+                              const SizedBox(
+                                height: 20,
+                              ),
+                              const Text(
+                                "Email",
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              const SizedBox(
+                                height: 15,
+                              ),
+                              Container(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 20,
+                                ),
+                                decoration: BoxDecoration(
+                                  color: textFormFieldColor2,
+                                  borderRadius: BorderRadius.circular(30),
+                                ),
+                                child: Focus(
+                                  onFocusChange: (hasFocus) {
+                                    setState(() {
+                                      if (hasFocus) {
+                                        textFormFieldColor2 =
+                                            textFormFieldOnTapColor;
+                                      } else {
+                                        textFormFieldColor2 =
+                                            const Color.fromARGB(
+                                                255, 206, 206, 200);
+                                      }
+                                      return;
+                                    });
+                                  },
+                                  child: TextFormField(
+                                    controller: _emailController,
+                                    keyboardType: TextInputType.emailAddress,
+                                    autovalidateMode: AutovalidateMode.always,
+                                    validator: (value) =>
+                                        _emailValidation(value),
+                                    focusNode: _focusNodeEmail,
+                                    onFieldSubmitted: (v) {
+                                      FocusScope.of(context)
+                                          .requestFocus(_focusNodePhoneNumber);
+                                    },
+                                    decoration: InputDecoration(
+                                      errorStyle: const TextStyle(
+                                          letterSpacing: 0.3,
+                                          fontWeight: FontWeight.w500),
+                                      labelStyle: TextStyle(
+                                          color: _focusNodeEmail.hasFocus
+                                              ? Colors.blue
+                                              : null),
+                                      errorMaxLines: 2,
+                                      border: InputBorder.none,
+                                      icon: const Icon(
+                                        Icons.email,
+                                        color: iconColor,
+                                      ),
+                                      hintText: 'Jackie@gmail.com',
+                                      labelText: "Enter email address",
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(
+                                height: 20,
+                              ),
+                              const Text(
+                                "Phone number",
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              const SizedBox(
+                                height: 15,
+                              ),
+                              Container(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 20,
+                                ),
+                                decoration: BoxDecoration(
+                                  color: textFormFieldColor3,
+                                  borderRadius: BorderRadius.circular(30),
+                                ),
+                                child: Focus(
+                                  onFocusChange: (hasFocus) {
+                                    setState(() {
+                                      if (hasFocus) {
+                                        textFormFieldColor3 =
+                                            textFormFieldOnTapColor;
+                                      } else {
+                                        textFormFieldColor3 =
+                                            const Color.fromARGB(
+                                                255, 206, 206, 200);
+                                      }
+                                      return;
+                                    });
+                                  },
+                                  child: TextFormField(
+                                    controller: _phoneNumberController,
+                                    keyboardType: TextInputType.number,
+                                    autovalidateMode: AutovalidateMode.always,
+                                    validator: (value) =>
+                                        _phoneNumberValidation(value),
+                                    focusNode: _focusNodePhoneNumber,
+                                    onFieldSubmitted: (v) {
+                                      FocusScope.of(context)
+                                          .requestFocus(_focusNodePassword);
+                                    },
+                                    decoration: InputDecoration(
+                                      errorStyle: const TextStyle(
+                                          letterSpacing: 0.3,
+                                          fontWeight: FontWeight.w500),
+                                      labelStyle: TextStyle(
+                                          color: _focusNodePhoneNumber.hasFocus
+                                              ? Colors.blue
+                                              : null),
+                                      errorMaxLines: 2,
+                                      border: InputBorder.none,
+                                      icon: const Icon(
+                                        Icons.email,
+                                        color: iconColor,
+                                      ),
+                                      hintText: 'ex:01126XXXXX',
+                                      labelText: "Enter phone number",
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(
+                                height: 20,
+                              ),
+                              const Text(
+                                "Password",
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              const SizedBox(
+                                height: 15,
+                              ),
+                              Container(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 20,
+                                ),
+                                decoration: BoxDecoration(
+                                  color: textFormFieldColor4,
+                                  borderRadius: BorderRadius.circular(30),
+                                ),
+                                child: Focus(
+                                  onFocusChange: (hasFocus) {
+                                    setState(() {
+                                      if (hasFocus) {
+                                        textFormFieldColor4 =
+                                            textFormFieldOnTapColor;
+                                      } else {
+                                        textFormFieldColor4 =
+                                            const Color.fromARGB(
+                                                255, 206, 206, 200);
+                                      }
+                                      return;
+                                    });
+                                  },
+                                  child: TextFormField(
+                                    obscureText: _isVisible ? false : true,
+                                    controller: _passwordController,
+                                    focusNode: _focusNodePassword,
+                                    autovalidateMode: AutovalidateMode.always,
+                                    validator: (value) =>
+                                        _passwordValidation(value),
+                                    onFieldSubmitted: (v) {
+                                      FocusScope.of(context).requestFocus(
+                                          _focusNodeReEnterPassword);
+                                    },
+                                    decoration: InputDecoration(
+                                      labelStyle: TextStyle(
+                                          color: _focusNodePassword.hasFocus
+                                              ? Colors.blue
+                                              : null),
+                                      suffixIcon: IconButton(
+                                        onPressed: () => updateStatus(),
+                                        icon: Icon(_isVisible
+                                            ? Icons.visibility
+                                            : Icons.visibility_off),
+                                      ),
+                                      border: InputBorder.none,
+                                      icon: const Icon(
+                                        Icons.lock,
+                                        color: iconColor,
+                                      ),
+                                      labelText: 'Enter password',
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(
+                                height: 10,
+                              ),
+                              if (_focusNodePassword.hasPrimaryFocus)
+                                _passwordValidator(),
+                              const SizedBox(
+                                height: 20,
+                              ),
+                              const Text(
+                                "Re-enter password",
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              const SizedBox(
+                                height: 15,
+                              ),
+                              Container(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 20,
+                                ),
+                                decoration: BoxDecoration(
+                                  color: textFormFieldColor5,
+                                  borderRadius: BorderRadius.circular(30),
+                                ),
+                                child: Focus(
+                                  onFocusChange: (hasFocus) {
+                                    setState(() {
+                                      if (hasFocus) {
+                                        textFormFieldColor5 =
+                                            textFormFieldOnTapColor;
+                                      } else {
+                                        textFormFieldColor5 =
+                                            const Color.fromARGB(
+                                                255, 206, 206, 200);
+                                      }
+                                      return;
+                                    });
+                                  },
+                                  child: TextFormField(
+                                    obscureText: true,
+                                    controller: _reEnterPasswordController,
+                                    textInputAction: TextInputAction.done,
+                                    autovalidateMode: AutovalidateMode.always,
+                                    validator: (value) =>
+                                        _reEnterPasswordValidation(value),
+                                    focusNode: _focusNodeReEnterPassword,
+                                    decoration: InputDecoration(
+                                      labelStyle: TextStyle(
+                                          color:
+                                              _focusNodeReEnterPassword.hasFocus
+                                                  ? Colors.blue
+                                                  : null),
+                                      border: InputBorder.none,
+                                      icon: const Icon(
+                                        Icons.lock,
+                                        color: iconColor,
+                                      ),
+                                      labelText: 'Re-enter password',
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                          Align(
+                            alignment: Alignment.topLeft,
+                            child: Row(
+                              children: [
+                                Checkbox(
+                                    checkColor: Colors.white,
+                                    fillColor:
+                                        MaterialStateProperty.resolveWith(
+                                            getColor),
+                                    value: _isChecked,
+                                    onChanged: (bool? value) {
+                                      setState(() {
+                                        _isChecked = value!;
+                                      });
+                                    }),
+                                GestureDetector(
+                                  onTap: _showEULA,
+                                  child: const Text(
+                                    'Agree with terms & conditions',
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          SizedBox(
+                            height: height / 4,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+                if (!_focusNodeUserName.hasFocus &&
+                    !_focusNodePassword.hasFocus &&
+                    !_focusNodeEmail.hasFocus &&
+                    !_focusNodePhoneNumber.hasFocus &&
+                    !_focusNodeReEnterPassword.hasFocus)
+                  Positioned(
+                    bottom: 55,
+                    left: 25,
+                    right: 25,
+                    child: Align(
+                      alignment: Alignment.center,
+                      child: Container(
+                        padding: const EdgeInsets.only(top: 5),
+                        child: Column(
+                          children: [
+                            FloatingActionButton.extended(
+                              hoverColor: buttonColor,
+                              onPressed: () {
+                                _registerAccountDialog();
+                              },
+                              label: const Text('Register'),
+                              icon: const Icon(
+                                Icons.two_wheeler_rounded,
+                                size: 24,
+                              ),
+                              backgroundColor: buttonColor,
+                            ),
+                            const SizedBox(
+                              height: 35,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                if (!_focusNodeUserName.hasFocus &&
+                    !_focusNodePassword.hasFocus &&
+                    !_focusNodeEmail.hasFocus &&
+                    !_focusNodePhoneNumber.hasFocus &&
+                    !_focusNodeReEnterPassword.hasFocus)
+                  navigateLoginPage(),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  /*----------------------------------------------------------------
+--> Navigate to login page*/
+  Widget navigateLoginPage() {
+    return AnimatedBuilder(
+      animation: animationController,
+      builder: (BuildContext context, Widget? child) {
+        return Align(
+          alignment: Alignment.bottomCenter,
+          child: GestureDetector(
+            onTap: () {
+              if (!_formKey.currentState!.validate() ||
+                  _userNameController.text != "" ||
+                  _emailController.text != "" ||
+                  _phoneNumberController.text != "" ||
+                  _passwordController.text != "" ||
+                  _reEnterPasswordController.text != "") {
+                _exitRegisterPage();
+              } else {
+                Navigator.of(context).push(
+                    MaterialPageRoute(builder: (context) => const LoginPage()));
+              }
+            },
+            child: Container(
+              width: double.infinity,
+              height: containerSize.value,
+              decoration: (const BoxDecoration(
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(100),
+                  topRight: Radius.circular(100),
+                ),
+                color: registerLoginContainerColor,
+              )),
+              alignment: Alignment.center,
+              child: const Text(
+                "Already have an account?Sign in",
+                style: TextStyle(
+                  fontSize: 14,
+                ),
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  /*----------------------------------------------------------------
+--> Firebase Authentication for Register account*/
+  Future<void> createUserWithEmailAndPassword() async {
+    try {
+      await Auth()
+          .createUserWithEmailAndPassword(
+            email: _emailController.text,
+            password: _passwordController.text,
+          )
+          .then((value) async => {
+                FirebaseFirestore.instance.collection('users').doc((uid)).set(
+                  {"Email": _emailController.text},
+                ),
+                Navigator.of(context).pushReplacement(
+                    MaterialPageRoute(builder: (context) => const LoginPage())),
+              });
+      Fluttertoast.showToast(
+          msg: "Register Successful",
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.BOTTOM,
+          timeInSecForIosWeb: 1,
+          fontSize: 14.0);
+      return;
+    } on FirebaseAuthException catch (e) {
+      setState(() {
+        errorMessage = e.message;
+        Navigator.of(context).pop();
+        Fluttertoast.showToast(
+            msg: "$errorMessage",
+            toastLength: Toast.LENGTH_LONG,
+            gravity: ToastGravity.BOTTOM,
+            timeInSecForIosWeb: 1,
+            fontSize: 14.0);
+        return;
+      });
+      print(errorMessage);
+    }
+  }
+
+/*----------------------------------------------------------------
+--> username validation*/
+  Widget _usernameValidationText() {
+    return Container(
+      decoration: BoxDecoration(
+        //color: const Color.fromARGB(255, 211, 209, 209),
+        borderRadius: BorderRadius.circular(7),
+      ),
+      margin: const EdgeInsets.fromLTRB(25, 3, 0, 0),
+      child: const Text(
+        '''- Requires minimum of 3 character and a maximum of 30.\n- Accepted characters are: a-z A-Z 0-9 dot(.) underscore(_).\n- Allow "_" and "." in the middle of character only.\n- Numbers must not be the first character.\n- The dot (.) or underscore (_) must not appear\n  consecutively.''',
+        style: TextStyle(
+          fontSize: 12,
+          fontWeight: FontWeight.bold,
+        ),
+      ),
+    );
+  }
+
+  _usernameValidation(value) {
+    if (value == null || value.trim().isEmpty) {
+      if (!_focusNodeUserName.hasPrimaryFocus) {
+        return null;
+      }
+      return 'This field is required';
+    }
+
+    if (value != null &&
+        !UValidator.validateThis(
+            pattern: RegPattern.strict, username: value!)) {
+      return "Enter a valid username";
+    } else {
+      if (!_focusNodeUserName.hasPrimaryFocus) {
+        return null;
+      }
+      return "Username available";
+    }
+  }
+
+  _usernameErrorTextColorValidation() {
+    if (((!UValidator.validateThis(
+            pattern: RegPattern.strict, username: _userNameController.text))) ||
+        _userNameController.text.trim().isEmpty ||
+        !_focusNodeUserName.hasPrimaryFocus) {
+      return Colors.red;
+    } else {
+      return Colors.green;
+    }
+  }
+
+/*----------------------------------------------------------------
+--> email validation*/
+  _emailValidation(value) {
+    if (value == null || value.trim().isEmpty) {
+      if (!_focusNodeEmail.hasPrimaryFocus) {
+        return null;
+      }
+      return 'This field is required';
+    }
+
+    if (value != null && !EmailValidator.validate(value)) {
+      return "Enter a valid email";
+    } else {
+      if (!_focusNodeEmail.hasPrimaryFocus) {
+        return null;
+      }
+      return null;
+    }
+  }
+
+  /*----------------------------------------------------------------
+--> phone number validation*/
+  _phoneNumberValidation(value) {
+    final RegExp phoneNumber =
+        RegExp(r'^(\+?6?01)[02-46-9]-*[0-9]{7}$|^(\+?6?01)[1]-*[0-9]{8}$');
+
+    if (value == null || value.trim().isEmpty) {
+      if (!_focusNodePhoneNumber.hasPrimaryFocus) {
+        return null;
+      }
+      return 'This field is required';
+    }
+    if (value != null && !phoneNumber.hasMatch(value)) {
+      return "Enter a valid phone number";
+    } else {
+      if (!_focusNodePhoneNumber.hasPrimaryFocus) {
+        return null;
+      }
+      return null;
+    }
+  }
+
+  /*----------------------------------------------------------------
+--> Password validation*/
+  Widget _passwordValidator() {
+    final double width = MediaQuery.of(context).size.width;
+    return Align(
+      alignment: Alignment.center,
+      child: FlutterPwValidator(
+        key: validatorKey,
+        controller: _passwordController,
+        height: 90,
+        minLength: 8,
+        uppercaseCharCount: 1,
+        specialCharCount: 1,
+        numericCharCount: 2,
+        width: width * 0.75,
+        onSuccess: () {
+          setState(() {
+            passwordMatch = true;
+          });
+        },
+        onFail: () {
+          setState(() {
+            passwordMatch = false;
+          });
+        },
+      ),
+    );
+  }
+
+  _passwordValidation(value) {
+    if (value == null || value.isEmpty) {
+      if (!_focusNodePassword.hasPrimaryFocus) {
+        return null;
+      }
+      return 'This field is required';
+    } else if (value != null && !passwordMatch) {
+      // if password entered only in re-enter textfield
+      return "Password is too weak";
+    }
+  }
+
+  /*----------------------------------------------------------------
+--> Re-enter password validation*/
+  _reEnterPasswordValidation(value) {
+    if (value == null || value.trim().isEmpty) {
+      // if FocusNode is false and empty
+      if (!_focusNodeReEnterPassword.hasPrimaryFocus && value.trim().isEmpty) {
+        return null;
+      }
+      return 'This field is required';
+    } else if (value != null &&
+        _passwordController.text != _reEnterPasswordController.text &&
+        passwordMatch) {
+      // if password entered is met criteria but not same
+      return "Password not match";
+    } else if (value != null &&
+        _passwordController.text == _reEnterPasswordController.text &&
+        !passwordMatch) {
+      // if password entered is not met criteria but same
+      return "Password is too weak";
+    } else if (value != null &&
+        _passwordController.text.trim().isNotEmpty &&
+        _passwordController.text != _reEnterPasswordController.text &&
+        !passwordMatch) {
+      // if password entered is not met criteria and not same
+      return "Password is too weak";
+    } else if (value != null && _passwordController.text.trim().isEmpty) {
+      // if password entered only in re-enter textfield
+      return "Fill in the password";
+    }
+  }
+
+/*----------------------------------------------------------------
+--> overall register validation*/
+  void _registerAccountDialog() {
+    if (!_formKey.currentState!.validate() ||
+        _userNameController.text == "" ||
+        _emailController.text == "" ||
+        _phoneNumberController.text == "" ||
+        _passwordController.text == "" ||
+        _reEnterPasswordController.text == "") {
+      Fluttertoast.showToast(
+          msg: "Please complete the registration form first",
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.BOTTOM,
+          timeInSecForIosWeb: 1,
+          fontSize: 14.0);
+      return;
+    }
+
+    if (!_isChecked) {
+      Fluttertoast.showToast(
+          msg: "Please accept the terms and conditions",
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.BOTTOM,
+          timeInSecForIosWeb: 1,
+          fontSize: 14.0);
+      return;
+    }
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(20.0))),
+          title: const Text(
+            "Register new account?",
+            style: TextStyle(fontSize: 18),
+          ),
+          content: const Text("Are you sure?", style: TextStyle()),
+          actions: <Widget>[
+            TextButton(
+              child: const Text(
+                "Yes",
+                style: TextStyle(),
+              ),
+              onPressed: () {
+                createUserWithEmailAndPassword();
+              },
+            ),
+            TextButton(
+              child: const Text(
+                "No",
+                style: TextStyle(),
+              ),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _exitRegisterPage() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(20.0))),
+          title: const Text(
+            "Are you sure you want to exit register page?",
+            style: TextStyle(fontSize: 18),
+          ),
+          content: const Text("All your data entered will be lost..",
+              style: TextStyle()),
+          actions: <Widget>[
+            TextButton(
+              child: const Text(
+                "Yes",
+                style: TextStyle(),
+              ),
+              onPressed: () {
+                Navigator.of(context).pushReplacement(
+                    MaterialPageRoute(builder: (context) => const LoginPage()));
+              },
+            ),
+            TextButton(
+              child: const Text(
+                "No",
+                style: TextStyle(),
+              ),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+/*----------------------------------------------------------------
+--> End-User License Agreement (EULA) of JimatGo */
+  void _showEULA() {
+    loadEula();
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text(
+            "EULA",
+          ),
+          content: SizedBox(
+            height: height / 1.5,
+            width: width,
+            child: Column(
+              children: <Widget>[
+                Expanded(
+                  flex: 1,
+                  child: SingleChildScrollView(
+                      child: RichText(
+                    softWrap: true,
+                    textAlign: TextAlign.justify,
+                    text: TextSpan(
+                        style: const TextStyle(
+                          fontSize: 12.0,
+                          color: Colors.black,
+                        ),
+                        text: eula),
+                  )),
+                ),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: const Text(
+                "Close",
+                style: TextStyle(),
+              ),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            )
+          ],
+        );
+      },
+    );
+  }
+
+  loadEula() async {
+    eula = await rootBundle.loadString('assets/eula.txt');
+  }
+}

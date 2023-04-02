@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "132737678692",
+    "project_id": "jimatgo-mobile-app",
+    "storage_bucket": "jimatgo-mobile-app.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:132737678692:android:90e744958d5bca203e0e71",
+        "android_client_info": {
+          "package_name": "com.example.jimatgo_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "132737678692-qg0drk1q4qrpc4d4jrtgm1d9iaphs2qp.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.jimatgo_app",
+            "certificate_hash": "6a2c014aa048576af728475e473e118e1136030f"
+          }
+        },
+        {
+          "client_id": "132737678692-muvt85arkel5vd5h4t623o8egc6u1khe.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB-wYXNmOThc2haWe2LL0MI5LHr8C3OmWY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "132737678692-muvt85arkel5vd5h4t623o8egc6u1khe.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

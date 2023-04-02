@@ -1,0 +1,117 @@
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:jimatgo_app/bookings.dart';
+import 'package:jimatgo_app/colors.dart';
+import 'package:jimatgo_app/mainpage.dart';
+import 'package:jimatgo_app/profile.dart';
+import 'package:jimatgo_app/responsive.dart';
+import 'package:jimatgo_app/services.dart';
+
+class HomePage extends StatefulWidget {
+  const HomePage({super.key});
+
+  @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  String errorMessage = "";
+  late List<Widget> tabchildren;
+  int _currentIndex = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    tabchildren = [
+      const Services(),
+      const Bookings(),
+      const ProfilePage(),
+    ];
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return WillPopScope(
+      onWillPop: _willPopCallback,
+      child: Scaffold(
+        body: SafeArea(
+          child: tabchildren[_currentIndex],
+        ),
+        bottomNavigationBar: BottomNavigationBar(
+          onTap: onTabTapped,
+          currentIndex: _currentIndex,
+          items: [
+            BottomNavigationBarItem(
+              label: "Services",
+              icon: Icon(
+                Icons.car_repair_sharp,
+                size: screenWidth * 0.07,
+              ),
+            ),
+            BottomNavigationBarItem(
+              label: "Booking History",
+              icon: Icon(
+                Icons.book,
+                size: screenWidth * 0.07,
+              ),
+            ),
+            BottomNavigationBarItem(
+                icon: Icon(
+                  Icons.person,
+                  size: screenWidth * 0.07,
+                ),
+                label: "Profile"),
+          ],
+        ),
+      ),
+    );
+  }
+
+  void onTabTapped(int index) {
+    setState(() {
+      _currentIndex = index;
+    });
+  }
+
+  /*----------------------------------------------------------------
+--> action to take if the return button in phone is clicked*/
+  Future<bool> _willPopCallback() async {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(20.0))),
+          title: Text(
+            "Exit?",
+            style: TextStyle(fontSize: contentFontSize),
+          ),
+          content: Text("Are you sure you want to exit the app?",
+              style: TextStyle(fontSize: contentFontSize)),
+          actions: <Widget>[
+            TextButton(
+              child: Text(
+                "Yes",
+                style: TextStyle(fontSize: contentFontSize),
+              ),
+              onPressed: () {
+                SystemChannels.platform.invokeMethod('SystemNavigator.pop');
+              },
+            ),
+            TextButton(
+              child: Text(
+                "No",
+                style: TextStyle(fontSize: contentFontSize),
+              ),
+              onPressed: () {
+                Navigator.of(context).pop();
+                FocusManager.instance.primaryFocus?.unfocus();
+              },
+            ),
+          ],
+        );
+      },
+    );
+    return true;
+  }
+}

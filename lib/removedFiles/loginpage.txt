@@ -1,0 +1,475 @@
+// ignore_for_file: depend_on_referenced_packages
+import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:jimatgo_app/auth.dart';
+import 'package:jimatgo_app/constants.dart';
+import 'package:jimatgo_app/homepage.dart';
+import 'package:jimatgo_app/Register.dart';
+import 'package:ndialog/ndialog.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+
+class LoginPage extends StatefulWidget {
+  const LoginPage({super.key});
+
+  @override
+  State<LoginPage> createState() => _LoginPageState();
+}
+
+class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
+  final FocusNode _focusNodeEmail = FocusNode();
+  final FocusNode _focusNodePassword = FocusNode();
+  final _formKey = GlobalKey<FormState>();
+
+  final _emailController = TextEditingController();
+  final _passwordController = TextEditingController();
+
+  bool _isChecked = false; //Remember me checkbox
+  bool _isVisible = false; //to view password
+  String? errorMessage = '';
+
+  late Animation<double> containerSize;
+  late AnimationController animationController;
+  Duration animationDuration = const Duration(milliseconds: 270);
+
+  Color textFormFieldColor1 = const Color.fromARGB(255, 206, 206, 200);
+  Color textFormFieldColor2 = const Color.fromARGB(255, 206, 206, 200);
+  Color textFormFieldOnTapColor = const Color.fromARGB(255, 223, 221, 221);
+
+  @override
+  void initState() {
+    animationController = AnimationController(
+      vsync: this,
+      duration: animationDuration,
+    );
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    animationController.dispose();
+    super.dispose();
+  }
+
+  void updateStatus() {
+    setState(() {
+      _isVisible = !_isVisible;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    Color getColor(Set<MaterialState> states) {
+      const Set<MaterialState> interactiveStates = <MaterialState>{
+        MaterialState.pressed,
+        MaterialState.hovered,
+        MaterialState.focused,
+      };
+      if (states.any(interactiveStates.contains)) {
+        return const Color.fromARGB(255, 177, 129, 26);
+      }
+      return const Color.fromARGB(255, 177, 129, 26);
+    }
+
+    final double height = MediaQuery.of(context).size.height;
+    final double width = MediaQuery.of(context).size.width;
+    //final double defaultRegisterSize = height - (height * 0.11);
+    print(height);
+    print(width);
+    containerSize = Tween<double>(
+      begin: height * 0.1,
+      //end: defaultRegisterSize,
+    ).animate(
+      CurvedAnimation(
+        parent: animationController,
+        curve: Curves.linear,
+      ),
+    );
+
+    return Scaffold(
+      //resizeToAvoidBottomInset: false,
+      body: GestureDetector(
+        onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
+        child: SafeArea(
+          child: Form(
+            key: _formKey,
+            child: Stack(
+              children: [
+                SizedBox(
+                  height: height / 5,
+                  width: width,
+                  child: Image.asset("assets/images/wallpaper.jpg",
+                      color: Colors.white.withOpacity(0.9),
+                      colorBlendMode: BlendMode.darken,
+                      fit: BoxFit.fitWidth),
+                ),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(20, 0, 25, 0),
+                  child: SingleChildScrollView(
+                    child: Column(
+                      children: [
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            SizedBox(
+                              height: height / 8,
+                            ),
+                            const Text(
+                              "LOGIN",
+                              style: TextStyle(
+                                fontSize: 33,
+                                fontFamily: 'BebasNeue',
+                                fontWeight: FontWeight.bold,
+                                letterSpacing: 1,
+                                color: titleColor,
+                              ),
+                            ),
+                            const SizedBox(
+                              height: 20,
+                            ),
+                            const Text(
+                              "Email",
+                              style: TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            const SizedBox(
+                              height: 15,
+                            ),
+                            Container(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 20,
+                              ),
+                              decoration: BoxDecoration(
+                                color: textFormFieldColor1,
+                                borderRadius: BorderRadius.circular(30),
+                              ),
+                              child: Focus(
+                                onFocusChange: (hasFocus) {
+                                  setState(() {
+                                    if (hasFocus) {
+                                      textFormFieldColor1 =
+                                          textFormFieldOnTapColor;
+                                    } else {
+                                      textFormFieldColor1 =
+                                          const Color.fromARGB(
+                                              255, 206, 206, 200);
+                                    }
+                                    return;
+                                  });
+                                },
+                                child: TextFormField(
+                                  controller: _emailController,
+                                  focusNode: _focusNodeEmail,
+                                  autovalidateMode: AutovalidateMode.always,
+                                  validator: (value) => _emailValidation(value),
+                                  onFieldSubmitted: (v) {
+                                    FocusScope.of(context)
+                                        .requestFocus(_focusNodePassword);
+                                  },
+                                  decoration: const InputDecoration(
+                                    border: InputBorder.none,
+                                    icon: Icon(
+                                      Icons.mail,
+                                      color: iconColor,
+                                    ),
+                                    hintText: "ex:Jackie@gmail.com",
+                                    labelText: 'Enter email address',
+                                    /*border: OutlineInputBorder(
+                                        borderRadius: BorderRadius.all(
+                                          Radius.circular(5.0),
+                                        ),
+                                        borderSide: BorderSide(
+                                          color: Colors.black,
+                                          width: 1.0,
+                                        ),
+                                      ),*/
+                                  ),
+                                ),
+                              ),
+                            ),
+                            const SizedBox(
+                              height: 20,
+                            ),
+                            const Text(
+                              "Password",
+                              style: TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            const SizedBox(
+                              height: 15,
+                            ),
+                            Container(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 20,
+                              ),
+                              decoration: BoxDecoration(
+                                color: textFormFieldColor2,
+                                borderRadius: BorderRadius.circular(30),
+                              ),
+                              child: Focus(
+                                onFocusChange: (hasFocus) {
+                                  setState(() {
+                                    if (hasFocus) {
+                                      textFormFieldColor2 =
+                                          textFormFieldOnTapColor;
+                                    } else {
+                                      textFormFieldColor2 =
+                                          const Color.fromARGB(
+                                              255, 206, 206, 200);
+                                    }
+                                    return;
+                                  });
+                                },
+                                child: TextFormField(
+                                  obscureText: _isVisible ? false : true,
+                                  controller: _passwordController,
+                                  textInputAction: TextInputAction.done,
+                                  autovalidateMode: AutovalidateMode.always,
+                                  validator: (value) =>
+                                      _passwordValidation(value),
+                                  focusNode: _focusNodePassword,
+                                  decoration: InputDecoration(
+                                    suffixIcon: IconButton(
+                                      onPressed: () => updateStatus(),
+                                      icon: Icon(_isVisible
+                                          ? Icons.visibility
+                                          : Icons.visibility_off),
+                                    ),
+                                    border: InputBorder.none,
+                                    icon: const Icon(
+                                      Icons.lock,
+                                      color: iconColor,
+                                    ),
+                                    labelText: 'Please enter password',
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        Align(
+                          alignment: Alignment.topLeft,
+                          child: Row(
+                            children: [
+                              Switch(
+                                  activeColor: buttonColor,
+                                  value: _isChecked,
+                                  onChanged: (bool? value) {
+                                    setState(() {
+                                      _onRememberMeChanged(value!);
+                                    });
+                                  }),
+                              const Text(
+                                'Keep me signed in',
+                                style: TextStyle(
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        SizedBox(
+                          height: height / 3,
+                        )
+                      ],
+                    ),
+                  ),
+                ),
+                if (!_focusNodeEmail.hasFocus && !_focusNodePassword.hasFocus)
+                  Positioned(
+                    bottom: 30,
+                    left: 25,
+                    right: 25,
+                    child: Align(
+                      alignment: Alignment.center,
+                      child: Container(
+                        padding: const EdgeInsets.only(top: 5),
+                        child: Column(
+                          children: [
+                            SizedBox(
+                              width: width,
+                              child: FloatingActionButton.extended(
+                                hoverColor:
+                                    const Color.fromARGB(255, 206, 156, 49),
+                                onPressed: () {
+                                  _loginUser();
+                                },
+                                label: const Text('Login'),
+                                icon: const Icon(
+                                  Icons.car_repair_rounded,
+                                  size: 24,
+                                ),
+                                backgroundColor: buttonColor,
+                              ),
+                            ),
+                            const SizedBox(
+                              height: 20,
+                            ),
+                            const Text(
+                              "Forgotten Password?",
+                              style: TextStyle(
+                                fontSize: 14,
+                              ),
+                            ),
+                            const SizedBox(
+                              height: 60,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                if (!_focusNodeEmail.hasFocus && !_focusNodePassword.hasFocus)
+                  navigateRegisterPage(),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  /*----------------------------------------------------------------
+--> Navigate to register page*/
+  Widget navigateRegisterPage() {
+    return AnimatedBuilder(
+      animation: animationController,
+      builder: (BuildContext context, Widget? child) {
+        return Align(
+          alignment: Alignment.bottomCenter,
+          child: GestureDetector(
+            onTap: () {
+              Navigator.of(context).pushReplacement(
+                  MaterialPageRoute(builder: (context) => const Register()));
+            },
+            child: Container(
+              width: double.infinity,
+              height: containerSize.value,
+              decoration: (const BoxDecoration(
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(100),
+                  topRight: Radius.circular(100),
+                ),
+                color: registerLoginContainerColor,
+              )),
+              alignment: Alignment.center,
+              child: const Text(
+                "Don't have an account?Sign up",
+                style: TextStyle(
+                  fontSize: 14,
+                ),
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  /*----------------------------------------------------------------
+--> Firebase Authentication for Login account*/
+  Future<void> signInWithEmailAndPassword() async {
+    try {
+      await Auth()
+          .signInWithEmailAndPassword(
+            email: _emailController.text,
+            password: _passwordController.text,
+          )
+          .then((value) => {
+                Navigator.of(context).pop(),
+                Navigator.of(context).push(
+                    MaterialPageRoute(builder: (context) => const HomePage())),
+              });
+      Fluttertoast.showToast(
+          msg: "Login Successful",
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.BOTTOM,
+          timeInSecForIosWeb: 1,
+          fontSize: 14.0);
+      return;
+    } on FirebaseAuthException catch (e) {
+      setState(() {
+        errorMessage = e.message;
+        Navigator.of(context).pop();
+        Fluttertoast.showToast(
+            msg: "Invalid email or password",
+            toastLength: Toast.LENGTH_LONG,
+            gravity: ToastGravity.BOTTOM,
+            timeInSecForIosWeb: 1,
+            fontSize: 14.0);
+        return;
+      });
+      print(errorMessage);
+    }
+  }
+
+  /*----------------------------------------------------------------
+--> email validation*/
+  _emailValidation(value) {
+    if (value == null || value.trim().isEmpty) {
+      if (!_focusNodeEmail.hasPrimaryFocus) {
+        return null;
+      }
+      return 'This field is required';
+    }
+  }
+
+  /*----------------------------------------------------------------
+--> password validation*/
+  _passwordValidation(value) {
+    if (value == null || value.trim().isEmpty) {
+      if (!_focusNodePassword.hasPrimaryFocus) {
+        return null;
+      }
+      return 'This field is required';
+    }
+  }
+
+/*----------------------------------------------------------------
+--> overall login validation*/
+  void _loginUser() {
+    if (!_formKey.currentState!.validate() ||
+        _emailController.text == "" ||
+        _passwordController.text == "") {
+      Fluttertoast.showToast(
+          msg: "Please fill in the login credentials",
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.BOTTOM,
+          timeInSecForIosWeb: 1,
+          fontSize: 14.0);
+      return;
+    } else {
+      signInWithEmailAndPassword();
+    }
+
+    ProgressDialog progressDialog = ProgressDialog(context,
+        message: const Text("Please wait.."), title: const Text("Login user"));
+    progressDialog.show();
+  }
+
+  void saveremovepref(bool value) async {
+    if (!_formKey.currentState!.validate()) {
+      Fluttertoast.showToast(
+          msg: "Please fill in the login credentials",
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.BOTTOM,
+          timeInSecForIosWeb: 1,
+          fontSize: 14.0);
+      _isChecked = false;
+      return;
+    }
+  }
+
+  void _onRememberMeChanged(bool newValue) => setState(() {
+        _isChecked = newValue;
+        if (_isChecked) {
+          saveremovepref(true);
+        } else {
+          saveremovepref(false);
+        }
+      });
+}
