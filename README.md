@@ -4,13 +4,13 @@ A new Flutter project.
 
 ## Getting Started
 
-This project is a starting point for a Flutter application.
+JimatGo Mobile Application is a project developed by myself during my internship at Newrll Sdn Bhd located at Located at : Sunway Velocity Designer Office, Unit V03-10,22, Lingkaran SV2, 55100 Kuala Lumpur. 
 
-A few resources to get you started if this is your first Flutter project:
+JimatGo Auto Service is still reliant on web application to manage their users and bookings which not only proves to be less compatibility than mobile application but also provides less user interaction.
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+Newrll Sdn Berhad aims to develop a mobile application for JimatGo Auto Service that caters to the needs of current culture and addresses the limitations of their current system.
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+As an intership student at Newrll Sdn Bhd I was provided a project to develop a mobile application for JimatGo Auto Service based on their requirements.
+
+
+
