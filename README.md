@@ -12,5 +12,4 @@ Newrll Sdn Berhad aims to develop a mobile application for JimatGo Auto Service 
 
 As an intership student at Newrll Sdn Bhd I was provided a project to develop a mobile application for JimatGo Auto Service based on their requirements.
 
-
-
+![JimatGo_App](https://user-images.githubusercontent.com/61192087/229336715-d03e485d-85b7-4a36-ab98-b46e8e54179f.png)
