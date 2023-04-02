@@ -1,10 +1,6 @@
-# jimatgo_app
+## Introduction
 
-A new Flutter project.
-
-## Getting Started
-
-JimatGo Mobile Application is a project developed by myself during my internship at Newrll Sdn Bhd located at Located at : Sunway Velocity Designer Office, Unit V03-10,22, Lingkaran SV2, 55100 Kuala Lumpur. 
+JimatGo Mobile Application is a project developed by myself during my internship at Newrll Sdn Bhd located at Sunway Velocity Designer Office, Unit V03-10,22, Lingkaran SV2, 55100 Kuala Lumpur. 
 
 JimatGo Auto Service is still reliant on web application to manage their users and bookings which not only proves to be less compatibility than mobile application but also provides less user interaction.
 
